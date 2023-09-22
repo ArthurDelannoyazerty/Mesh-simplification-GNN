@@ -40,7 +40,7 @@ class GNNSimple(nn.Module):
         x = self.gc2(x)
         return x
 
-########################### Création du modèle ##############################################
+########################### Création d'un modèle ##############################################
 model = GNNSimple(in_dim=feat_dim, hidden_dim=16, out_dim=num_classes)
 
 # Définition de la fonction de perte et de l'optimiseur
