@@ -2,5 +2,5 @@ import pyvista as pv
 from pyvista import examples
 
 # Get a sample file
-mesh = pv.read('Models/cube.obj')
-mesh.plot(cpos=[-1, 2, -5])
+mesh = pv.read('Models/alien_pilot_standing.stl')
+mesh.plot(cpos=[-1, 2, -5], show_edges=True)
