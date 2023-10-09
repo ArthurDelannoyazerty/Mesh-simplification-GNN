@@ -4,6 +4,7 @@ import vtkplotlib as vpl
 import numpy as np
 from pprint import pprint
 import matplotlib.pyplot as plt
+import pyvista as pv
 
 def stl_to_mesh(stl_file_path):
     """Load a stl file and transform it into a mesh. Return the mesh."""
@@ -78,8 +79,10 @@ def graph_to_mesh(graph):
     return mesh_obj
 
 
+
+
 # Create objects
-stl_file_path = "3d_models/cube.stl"
+stl_file_path = "3d_models/stl/cube.stl"
 mesh_data = stl_to_mesh(stl_file_path)
 graph = mesh_to_graph(mesh_data)
 mesh_from_graph = graph_to_mesh(graph)

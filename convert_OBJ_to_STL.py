@@ -1,4 +1,5 @@
 import vtk
+import os
 
 def convert_OBJ_to_STL(input_obj_file, output_stl_file, rotate_angle_x=0.0):
     # Crée un objet de type vtkOBJReader pour lire des fichiers OBJ.
@@ -31,10 +32,16 @@ def convert_OBJ_to_STL(input_obj_file, output_stl_file, rotate_angle_x=0.0):
     writer.Write()
 
 if __name__ == "__main__":
-    input_obj_file = 'bunny.obj'
-    output_stl_file = 'bunny_rootated.stl'
+
+    directory_obj = "3d_models\obj"
+    directory_stl = "3d_models\stl"
+    for filename in os.listdir(directory_obj):
+        input_obj_file = os.path.join(directory_obj, filename)
+        if os.path.isfile(input_obj_file):
+            output_stl_file = os.path.join(directory_stl, filename)[0:-4] + ".stl"
+            print(output_stl_file)
     
-    # Ajoutez l'angle de rotation autour de l'axe X en degrés ici
-    rotate_angle_x = 90.0
-    
-    convert_OBJ_to_STL(input_obj_file, output_stl_file, rotate_angle_x)
+            # Ajoutez l'angle de rotation autour de l'axe X en degrés ici
+            rotate_angle_x = 90.0
+            
+            convert_OBJ_to_STL(input_obj_file, output_stl_file, rotate_angle_x)
