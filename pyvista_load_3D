@@ -1,6 +1,0 @@
-import pyvista as pv
-from pyvista import examples
-
-# Get a sample file
-mesh = pv.read('3d_models/alien_pilot_standing.stl')
-mesh.plot(cpos="xz", show_edges=True)
