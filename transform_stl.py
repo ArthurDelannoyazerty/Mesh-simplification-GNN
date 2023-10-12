@@ -6,7 +6,7 @@ from pprint import pprint
 import matplotlib.pyplot as plt
 import pyvista as pv
 
-DEBUG = False
+DEBUG = True
 
 def stl_to_mesh(stl_file_path, debug=False):
     """Load a stl file and transform it into a mesh. Return the mesh."""
@@ -53,40 +53,30 @@ def print_graph_properties(graph, display_graph=False, display_labels=False, deb
         plt.show()
 
 def graph_to_mesh(graph, debug=False):
-    if debug: print("DEBUG : Graph to mesh : Step 1")
-    # Create a dictionary to store the integers as keys and their corresponding coordinates as values
-    integer_to_coordinates = {}
-    set_coordinate = set()
 
-    # Iterate through the dictionary and populate the integer_to_coordinates dictionary
-    for coord, attributes in graph._node.items():
-        set_coordinate.add(coord)
-        index_set = attributes['index_triangle']
-        for index in index_set:
-            if index in integer_to_coordinates:
-                integer_to_coordinates[index].append(coord)
-            else:
-                integer_to_coordinates[index] = [coord]
 
-    vertices = [list(coord) for coord in set_coordinate]
+    vertices = list()
+    dict_face = dict()  #{face1: {index1, index2}, ...}
+    index_vertices = 0
+    len_vertices = len(graph._node.items())
+    for coord, set_index_triangle in graph._node.items():
+        if debug: print(f"DEBUG : Graph to mesh :  Step 1 : {index_vertices+1}/{len_vertices}")
+        vertices.append(list(coord))
+        index_triangle = set_index_triangle["index_triangle"]
+        for index in index_triangle:
+            if index not in dict_face:
+                dict_face[index] = set()
+            dict_face[index].add(index_vertices)
+        index_vertices += 1
 
-    # Create a list to store the triplets with the same integer
-    faces = [[] for _ in range(int(max(integer_to_coordinates.keys()))+1)]
+    faces = [list(triple_index) for triple_index in dict_face.values()]
 
-    len_vertices = len(vertices)
-    for i, coord in enumerate(vertices):
-        if debug: print(f"DEBUG : Graph to mesh : Step 2 : {i+1}/{len_vertices}")
-        for j, triplet in integer_to_coordinates.items():
-            if tuple(coord) in triplet:
-                faces[j].append(i)
-
-    faces = np.array(faces)
-    vertices = np.array(vertices)
+    faces, vertices = np.array(faces), np.array(vertices)
 
     mesh_obj = mesh.Mesh(np.zeros(faces.shape[0], dtype=mesh.Mesh.dtype))
     len_faces = len(faces)
     for i, f in enumerate(faces):
-        if debug: print("DEBUG : Graph to mesh : Step 3 : " + str(i+1) + "/" + str(len_faces))
+        if debug: print("DEBUG : Graph to mesh : Step 2 : " + str(i+1) + "/" + str(len_faces))
         for j in range(3):
             mesh_obj.vectors[i][j] = vertices[f[j],:]
     return mesh_obj
@@ -95,7 +85,7 @@ def graph_to_mesh(graph, debug=False):
 
 
 # Create objects
-stl_file_path = "3d_models/stl/cube.stl"
+stl_file_path = "3d_models/stl/Handle.stl"
 mesh_data = stl_to_mesh(stl_file_path, DEBUG)
 graph = mesh_to_graph(mesh_data, DEBUG)
 mesh_from_graph = graph_to_mesh(graph, DEBUG)
