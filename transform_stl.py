@@ -5,6 +5,7 @@ import numpy as np
 from pprint import pprint
 import matplotlib.pyplot as plt
 import pyvista as pv
+from vtkplotlib import geometry
 
 def stl_to_mesh(stl_file_path):
     """Load a stl file and transform it into a mesh. Return the mesh."""
@@ -31,11 +32,26 @@ def mesh_to_graph(mesh_data):
             G.nodes[current_node]['index_triangle'].add(index_triangle)
     return G
 
-def mesh_to_display_vtk(mesh):
-    # tri_scalars = np.inner(mesh.units, np.array([0, 0, 1]))
-    vpl.mesh_plot(mesh)
-    # vpl.mesh_plot_with_edge_scalars(mesh)
+def mesh_to_display_vtk_maillage(mesh):
+    #tri_scalars = np.inner(mesh.units, np.array([0, 0, 1]))
+    
+    vertices = mesh.vectors
+    vpl.plot(vertices, join_ends=True, color="dark red")
+    
+    #edge_scalars = geometry.distance(mesh.vectors[:, np.arange(1, 4) % 3] - mesh.vectors)
+    #vpl.mesh_plot_with_edge_scalars(mesh, edge_scalars, centre_scalar=0, cmap="autumn")
+    
     vpl.show()
+    
+def mesh_to_display_vtk_faces(mesh):
+    #tri_scalars = np.inner(mesh.units, np.array([0, 0, 1]))
+    
+    vpl.mesh_plot(mesh)
+    
+    #edge_scalars = geometry.distance(mesh.vectors[:, np.arange(1, 4) % 3] - mesh.vectors)
+    #vpl.mesh_plot_with_edge_scalars(mesh, edge_scalars, centre_scalar=0, cmap="autumn")
+    
+    vpl.show()    
 
 def print_graph_properties(graph, display_graph=False, display_labels=False):
     print(f"Number of nodes: {len(graph.nodes())}")
@@ -89,5 +105,6 @@ mesh_from_graph = graph_to_mesh(graph)
 
 # Display informations
 print_graph_properties(graph, display_graph=True, display_labels=True)
-mesh_to_display_vtk(mesh_data)
-mesh_to_display_vtk(mesh_from_graph)
+mesh_to_display_vtk_maillage(mesh_data)
+mesh_to_display_vtk_faces(mesh_data)
+mesh_to_display_vtk_faces(mesh_from_graph)
