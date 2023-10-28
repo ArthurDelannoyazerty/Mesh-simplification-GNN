@@ -1,28 +1,53 @@
-import math
 import torch
 import torch.nn as nn
-import numpy as np
 
+class DevConvLayer(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super(DevConvLayer, self).__init__()
+        self.in_channels = in_channels
+        self.out_channels = out_channels
 
-#example of custom layer :
+        self.inclusion_score = None
 
-class DevConv(nn.Module):
-    """ Custom Linear layer but mimics a standard linear layer """
-    def __init__(self, size_in, size_out):
-        super().__init__()
-        # self.size_in, self.size_out = size_in, size_out
-        # weights = torch.Tensor(size_out, size_in)
-        # self.weights = nn.Parameter(weights)  # nn.Parameter is a Tensor that's a module parameter.
-        # bias = torch.Tensor(size_out)
-        # self.bias = nn.Parameter(bias)
+        # Learnable parameters
+        self.W_phi = nn.Parameter(torch.rand(in_channels, out_channels))
+        self.W_theta = nn.Parameter(torch.rand(in_channels, out_channels))
 
-        # # initialize weights and biases
-        # nn.init.kaiming_uniform_(self.weights, a=math.sqrt(5)) # weight init
-        # fan_in, _ = nn.init._calculate_fan_in_and_fan_out(self.weights)
-        # bound = 1 / math.sqrt(fan_in)
-        # nn.init.uniform_(self.bias, -bound, bound)  # bias init
+    def forward(self, x, adjacency_matrix, inclusion_score=None):
+        # Ensure dimensions match
+        assert x.size(1) == self.in_channels, "Input tensor dimension mismatch"
+        assert adjacency_matrix.size(0) == adjacency_matrix.size(1) == x.size(0), "Adjacency matrix size mismatch"
 
-    def forward(self, x):
-        # w_times_x= torch.mm(x, self.weights.t())
-        # return torch.add(w_times_x, self.bias)  # w times x + b
-        pass
+        if inclusion_score==None:
+            self.inclusion_score = torch.zeros(x.size(0))
+
+        # Compute the deviation of each point from its neighbors
+        deviations = torch.zeros_like(x)  # Initialize deviations as zeros
+
+        for i in range(x.size(0)):
+            neighbors = adjacency_matrix[i]  # Get neighbors of point i
+            if neighbors.sum() == 0:
+                continue  # Skip if there are no neighbors
+            
+            temp = [((x[i][0]-x[j][0]) + (x[i][1]-x[j][1]) + (x[i][2]-x[j][2])) if neighbors[j]!=0 else 0 for j in range(len(neighbors))]
+            deviation = torch.mul(torch.FloatTensor(temp), self.W_phi)
+            maxi = torch.max(deviation)
+            deviations[i] = maxi
+
+        return deviations
+
+# Example usage:
+# Create a random input tensor and an adjacency matrix
+input_dim = 3  # Input tensor has 64 dimensions
+num_points = 10
+x = torch.rand(num_points, input_dim)
+adjacency_matrix = torch.randint(2, (num_points, num_points))
+
+# Make sure adjacency_matrix[i][i] is set to 0, as a point is not its own neighbor
+for i in range(num_points):
+    adjacency_matrix[i][i] = 0
+
+# Create and apply the DevConv layer
+devconv = DevConvLayer(input_dim, out_channels=10)
+output = devconv(x, adjacency_matrix)
+print(output)
