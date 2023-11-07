@@ -37,22 +37,12 @@ def mesh_to_graph(mesh_data, debug=False):
             G.nodes[current_node]['index_triangle'].add(index_triangle)
     return G
     
-def mesh_to_display_vtk_edges(mesh, debug=False):
-    if debug: print("DEBUG : Display mesh edges vtk")
+def mesh_to_display_vtk(mesh, debug=False):
+    if debug: print("DEBUG : Display mesh faces vtk")
     #tri_scalars = np.inner(mesh.units, np.array([0, 0, 1]))
 
     vertices = mesh.vectors
     vpl.plot(vertices, join_ends=True, color="dark red")
-
-    #edge_scalars = geometry.distance(mesh.vectors[:, np.arange(1, 4) % 3] - mesh.vectors)
-    #vpl.mesh_plot_with_edge_scalars(mesh, edge_scalars, centre_scalar=0, cmap="autumn")
-
-    vpl.show()
-
-def mesh_to_display_vtk_faces(mesh, debug=False):
-    if debug: print("DEBUG : Display mesh faces vtk")
-    #tri_scalars = np.inner(mesh.units, np.array([0, 0, 1]))
-
     vpl.mesh_plot(mesh)
 
     #edge_scalars = geometry.distance(mesh.vectors[:, np.arange(1, 4) % 3] - mesh.vectors)
@@ -102,13 +92,12 @@ def graph_to_mesh(graph, debug=False):
 
 
 # Create objects
-stl_file_path = "3d_models/stl/Handle.stl"
+stl_file_path = "3d_models/stl/Bricks.stl"
 mesh_data = stl_to_mesh(stl_file_path, DEBUG)
 graph = mesh_to_graph(mesh_data, DEBUG)
 mesh_from_graph = graph_to_mesh(graph, DEBUG)
 
 # Display informations
 print_graph_properties(graph, display_graph=False, display_labels=True, debug=DEBUG)
-mesh_to_display_vtk_edges(mesh_data, DEBUG)
-mesh_to_display_vtk_faces(mesh_data, DEBUG)
-mesh_to_display_vtk_faces(mesh_from_graph, DEBUG)
+mesh_to_display_vtk(mesh_data, DEBUG)
+mesh_to_display_vtk(mesh_from_graph, DEBUG)
