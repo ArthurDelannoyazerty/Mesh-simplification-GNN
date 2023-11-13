@@ -1,21 +1,4 @@
-# Mesh Simplification 
-
-This python 3+ mesh simplification script is a command line tool that uses Quadric Error Metrics [pdf](https://www.cs.cmu.edu/~./garland/Papers/quadrics.pdf) to iteratively contract edges that minimize the change to the overall geometry.
-
-
-<p align="center">
-  <img src="https://i.imgur.com/ljd5ZSu.gif" alt="Triceratops skull" width="500">
-</p>
-
-<p align="center">Mesh Simplification from original 600,000 faces to 600 faces </p>
-
-
-## Supported Files
-
-Currently, this tool supports `.obj` files without any extra steps and `.stl` files after they've been converted from binary to ASCII. The ruby script, `convertSTL.rb` was forked from [here](https://github.com/cmpolis/convertSTL) (credit to cmpolis) and can be run from the command line to convert from binary encoding to ASCII.
- 
-  
-    $ ruby convertSTL.rb [filename of .stl to be converted]
+#
 
 ## Usage
 
