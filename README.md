@@ -7,11 +7,6 @@ Once the files are in a supported format, the tool can be run after providing th
     $ python simplify_mesh.py /path/to/file.stl 0.5,0.1,0.005
     
 
-## Output
-
-The tool will output the final vertices and faces in separate files which are easy to read in via numpy. The provided script `view_mesh.py` uses pyqtgraph to view and interact with the final mesh. Run this viewer tool with the following command:
-
-    $ python view_mesh base_file 0.5
 
 ## Details
 
