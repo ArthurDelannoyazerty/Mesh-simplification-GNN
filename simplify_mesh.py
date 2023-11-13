@@ -1,6 +1,9 @@
 import pdb
 import numpy as np
 import sys
+import cProfile
+import pdb
+import sys
 #convert to format similar to work
 
 from triangle import Triangle

@@ -1,4 +1,3 @@
-
 import numpy as np
 import sys
 from vector import Vector
