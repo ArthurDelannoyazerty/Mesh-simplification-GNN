@@ -2,10 +2,7 @@ import networkx as nx
 from stl import mesh
 import vtkplotlib as vpl
 import numpy as np
-from pprint import pprint
 import matplotlib.pyplot as plt
-import pyvista as pv
-from vtkplotlib import geometry
 
 class Transformation():
     def __init__(self, debug=False):
