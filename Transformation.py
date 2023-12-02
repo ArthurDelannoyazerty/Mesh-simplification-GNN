@@ -2,8 +2,10 @@ import networkx as nx
 from stl import mesh
 import vtkplotlib as vpl
 import numpy as np
+from pprint import pprint
 import matplotlib.pyplot as plt
-
+import pyvista as pv
+from vtkplotlib import geometry
 
 class Transformation():
     def __init__(self, debug=False):
@@ -40,6 +42,8 @@ class Transformation():
     def mesh_to_display_vtk(self, mesh):
         if self.DEBUG: print("DEBUG : Display mesh vtk")
         # tri_scalars = np.inner(mesh.units, np.array([0, 0, 1]))
+        vertices = mesh.vectors
+        vpl.plot(vertices, join_ends=True, color="dark red")
         vpl.mesh_plot(mesh)
         # vpl.mesh_plot_with_edge_scalars(mesh)
         vpl.show()
@@ -82,15 +86,15 @@ class Transformation():
 
 
 
-# transformation = Transformations(True)
+# transformation = Transformation(True)
 
 # # Create objects
-# stl_file_path = "3d_models/stl/cube.stl"
+# stl_file_path = "3d_models/stl/Handle.stl"
 # mesh_data = transformation.stl_to_mesh(stl_file_path)
 # graph = transformation.mesh_to_graph(mesh_data)
 # mesh_from_graph = transformation.graph_to_mesh(graph)
 
 # # Display informations
-# transformation.print_graph_properties(graph, display_graph=True, display_labels=True)
+# transformation.print_graph_properties(graph, display_graph=False, display_labels=True)
 # transformation.mesh_to_display_vtk(mesh_data)
 # transformation.mesh_to_display_vtk(mesh_from_graph)
