@@ -4,11 +4,25 @@ import scipy as sp
 import heapq
 import copy
 from sklearn.preprocessing import normalize
+from scipy.spatial import KDTree
+from scipy.sparse.linalg import eigs
+from scipy.sparse import csr_matrix
 
 OPTIM_VALENCE = 6
 VALENCE_WEIGHT = 1
 
 class Mesh:
+    def laplacian(self, max_vertices):
+        adjacency = np.zeros((max_vertices, max_vertices))
+        for face in self.faces:
+            for i in range(3):
+                adjacency[face[i], face[(i + 1) % 3]] = 1
+                adjacency[face[(i + 1) % 3], face[i]] = 1
+
+        degree = np.diag(np.sum(adjacency, axis=1))
+        laplacian = csr_matrix(degree - adjacency)  # Use csr_matrix for sparse representation
+        return laplacian
+
     def __init__(self, path, build_code=False, build_mat=False, manifold=True):
         self.path = path
         self.vs, self.faces = self.fill_from_file(path)
@@ -652,3 +666,5 @@ class Mesh:
             v = list(set(self.edges[cycle[i]]) & set(self.edges[cycle[(i + 1) % 3]]))[0]
             face.append(v_indices[v])
         return face
+    
+ 
