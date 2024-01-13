@@ -71,7 +71,7 @@ def performance_metrics(original_mesh_path, simplified_mesh_path, csv_filename,s
         "simplification_rate": simplification_rate
 
     }
-    append_metrics_to_csv(metrics, csv_filename)
+    # append_metrics_to_csv(metrics, csv_filename)           # saved after
     
     return metrics
 
