@@ -52,6 +52,13 @@ def main():
 
     base_input_data_folder = "benchmark\data\input\\"
     base_output_data_folder= "benchmark\data\output\mesh\\"
+
+    csv_filepath = "benchmark/data/output/csv/measures.csv"
+
+
+    os.remove(csv_filepath)
+    with open(csv_filepath, mode='a', newline='') as file_csv:
+        csv.writer(file_csv).writerow(["filepath", "simplification_rate", "index_simplification_method", "time", "hausdorff_distance", "chamfer_distance", "curvature_error", "memory"])
     
     
     # for filename in os.listdir(base_input_data_folder+"stl"):                                 # decomment to transform every stl to obj                         
@@ -93,7 +100,7 @@ def main():
 
                     data_to_save = [f, simplification_rate, index_function, execution_time, metrics['hausdorff_distance'], metrics['chamfer_distance'], metrics['curvature_error'], metrics['memory_usage']]
 
-                    with open("benchmark/data/output/csv/measures.csv", mode='a', newline='') as file_csv:
+                    with open(csv_filepath, mode='a', newline='') as file_csv:
                         csv.writer(file_csv).writerow(data_to_save)
 
 
