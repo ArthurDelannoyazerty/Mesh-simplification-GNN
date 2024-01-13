@@ -1,4 +1,4 @@
 __pycache__
 
-*.obj
-data/output/*
+
+data/output/mesh/*
