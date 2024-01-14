@@ -4,13 +4,13 @@ import numpy as np
 from util.mesh import Mesh
 from benchmark import performance_metrics
 
-from stl import mesh
+import stl
 import numpy as np
 import csv
 
 def convert_stl_to_obj(stl_file_path, folder_obj, filename):
     obj_file_path = (folder_obj + filename).replace('.stl', '.obj')
-    stl_mesh = mesh.Mesh.from_file(stl_file_path)
+    stl_mesh = stl.mesh.Mesh.from_file(stl_file_path)
     vertices = stl_mesh.vectors.reshape(-1, 3)
     unique_vertices, faces = np.unique(vertices, axis=0, return_inverse=True)
     faces = faces.reshape(-1, 3) + 1  # OBJ files are 1-indexed
@@ -32,7 +32,7 @@ def simplification1(filepath, simplification_rate):
         print(f"[ERROR]: Target vertex number for rate {simplification_rate} should be smaller than {mesh.vs.shape[0]}!")
         return None
 
-    simp_mesh = mesh.simplification(target_v)
+    simp_mesh = mesh.edge_based_simplification(target_v)
     return simp_mesh
 
 
