@@ -15,7 +15,6 @@ class KNNSimple(nn.Module):
         self.k = k
 
     def forward(self, nodes):
-    
         expanded_x1 = nodes.unsqueeze(1)
         expanded_x2 = nodes.unsqueeze(0)
         distances = torch.norm(expanded_x1 - expanded_x2, dim=2)        # distance matrix

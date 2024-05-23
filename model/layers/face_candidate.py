@@ -2,11 +2,10 @@ import torch
 import torch.nn as nn
 
 class FaceCandidatesLayer(nn.Module):
-    def __init__(self, adjacency_matrix):
+    def __init__(self):
         super().__init__()
-        self.adjacency_matrix = adjacency_matrix
 
-    def forward(self, S):
-        A_s = torch.matmul(torch.matmul(S, self.adjacency_matrix), S.T)     # A_s = S * A * S.T
+    def forward(self, S, adjacency_matrix):
+        A_s = torch.matmul(torch.matmul(S, --adjacency_matrix), S.T)     # A_s = S * A * S.T
         A_s = A_s/A_s.max()                                                 # Normalize
         return A_s

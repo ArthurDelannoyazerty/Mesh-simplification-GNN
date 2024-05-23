@@ -2,14 +2,13 @@ import torch
 import torch.nn as nn
 
 class TriangleIndexes(nn.Module):
-    def __init__(self, adjacency_matrix):
+    def __init__(self):
         super().__init__()
-        self.adjacency_matrix = adjacency_matrix
 
-    def forward(self):
+    def forward(self, adjacency_matrix):
         # tensor of indexes of each neighbors of each nodes 
-        nonzero = self.adjacency_matrix.nonzero()
-        neighbors_one_indexes = nonzero.reshape(self.adjacency_matrix.shape[0],15,2)[:,:,1].clone()
+        nonzero = adjacency_matrix.nonzero()
+        neighbors_one_indexes = nonzero.reshape(adjacency_matrix.shape[0],15,2)[:,:,1].clone()
         neighbors_two_indexes = neighbors_one_indexes[neighbors_one_indexes]        # Tensor for each 2 neighbors for each nodes (neighbors of neighbors)
         neighbors_three_indexes = neighbors_one_indexes[neighbors_two_indexes]      # Tensor for each 3 neighbors for each nodes (neighbors of neighbors of neighbors)
 

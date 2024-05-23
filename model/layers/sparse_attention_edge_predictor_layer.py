@@ -2,23 +2,20 @@ import torch
 import torch.nn as nn
 
 class SparseAttentionEdgePredictorLayer(nn.Module):
-    def __init__(self, nodes, neighbors, size=64):
+    def __init__(self, size):
         super().__init__()
-        self.size = size
-        self.nodes = nodes
-        self.neighbors = neighbors
         self.wq = nn.Parameter(torch.Tensor(size))
         self.wk = nn.Parameter(torch.Tensor(size))
-
         nn.init.normal_(self.wq)
         nn.init.normal_(self.wk)
 
-    def forward(self, f):
+
+    def forward(self, f, neighbors):
         wq_f = self.wq.reshape(-1, 1) * f                   # Wq*f
         wk_f = self.wk.reshape(-1, 1) * f                   # Wq*f
         S = torch.exp(torch.matmul(wq_f.T, wk_f))           # e^((wq_f.T)*(wk_f))
         
-        nonzero_neigh = self.neighbors.nonzero()                                                    # Find indexes of neighbors in graph
+        nonzero_neigh = neighbors.nonzero()                                                    # Find indexes of neighbors in graph
         unique_first_elements, counts = torch.unique(nonzero_neigh[:, 0], return_counts=True)       # Count number of neighbors per node
         split_tensors = list(torch.split(nonzero_neigh, tuple(counts)))                             # split indexes of neighbors into a list (1 element = 1 tensor of indexes)
 

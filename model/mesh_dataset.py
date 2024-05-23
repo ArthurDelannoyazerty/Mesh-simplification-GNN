@@ -1,6 +1,8 @@
 import os
+import networkx as nx
+import numpy as np
 
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 from transformation import Transformation
 
 class MeshDataset(Dataset):
@@ -12,7 +14,7 @@ class MeshDataset(Dataset):
             if os.path.isfile(f):
                 self.filepaths.append(f)
         self.len = len(self.filepaths)
-        self.transormation = Transformation()
+        self.transformation = Transformation()
 
     def __len__(self):
         return self.len
@@ -21,4 +23,6 @@ class MeshDataset(Dataset):
         mesh_path = self.filepaths[idx]
         mesh_data = self.transformation.stl_to_mesh(mesh_path)
         graph = self.transformation.mesh_to_graph(mesh_data)
-        return mesh_data, graph
+        graph_adjacency_matrix = nx.to_numpy_array(graph)
+        graph_nodes = np.array(graph.nodes)
+        return graph_nodes, graph_adjacency_matrix

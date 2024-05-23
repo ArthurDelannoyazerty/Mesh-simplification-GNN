@@ -27,11 +27,11 @@ graph_adjacency_matrix = torch.Tensor(nx.adjacency_matrix(graph).toarray())
 
 
 torch_dataset = MeshDataset("3d_models/stl/")
-train_dataloader = DataLoader(torch_dataset, shuffle=True)
+train_dataloader = DataLoader(torch_dataset, batch_size=1, shuffle=True)
 
 
 gnn_model = GNNSimplificationMesh(number_neigh_tri)
-optimizer = torch.optim.Adam(gnn_model.parameters(), lr=1e-5, weight_decay=0.99)
+# optimizer = torch.optim.Adam(gnn_model.parameters(), lr=1e-5, weight_decay=0.99)
 
 list(gnn_model.parameters())
 
@@ -41,20 +41,22 @@ for epoch in range(0, 5):
     
     current_loss = 0.0
     
-    for i, data in enumerate(train_dataloader, 0):
+
+
+    # for data in train_dataloader:
         
-        inputs, targets = data
-        optimizer.zero_grad()
-        outputs = gnn_model(inputs)
+    graph_nodes, graph_adjacency_matrix = torch_dataset[0]
+        # optimizer.zero_grad()
+    outputs = gnn_model(200, graph_nodes, graph_adjacency_matrix)
         
-        loss = total_loss(outputs, targets)
-        loss.backward()
-        optimizer.step()
+        # loss = total_loss(outputs, targets)
+        # loss.backward()
+        # optimizer.step()
         
-        current_loss += loss.item()
-        if i % 500 == 499:
-            print('Loss after mini-batch %5d: %.3f' %
-                (i + 1, current_loss / 500))
-            current_loss = 0.0
+#         current_loss += loss.item()
+#         if i % 500 == 499:
+#             print('Loss after mini-batch %5d: %.3f' %
+#                 (i + 1, current_loss / 500))
+#             current_loss = 0.0
             
-print('Training process has finished.')
+# print('Training process has finished.')

@@ -15,6 +15,8 @@ from layers.knn import KNN
 from layers.r_matrix import RMatrix
 from layers.mlp import MLP
 
+
+
 class GNNSimplificationMesh(nn.Module):
     def __init__(self, number_neigh_tri):
         super().__init__()
@@ -22,50 +24,55 @@ class GNNSimplificationMesh(nn.Module):
         # self.graph_adjacency_matrix = graph_adjacency_matrix
         self.number_neigh_tri = number_neigh_tri
 
+        self.layer_gnn_model = GNN_Model()
+        self.layer_multinomial = MultinomialLayer()
+        self.layer_knn_simple = KNNSimple(k=15)
+        self.layer_devconv_edge_predictor = DevConv(64)
+        self.layer_sparse_attention_edge_predictor = SparseAttentionEdgePredictorLayer(64)
+        self.layer_face_cadidates = FaceCandidatesLayer()
+        self.layer_triangle_indexes = TriangleIndexes()
+        self.layer_triangle_nodes = TriangleNodes()
+        self.layer_first_p_init = FirstPInitLayer()
+        self.layer_barycenters = BarycentersLayer()
+        self.layer_knn = KNN(k=20, batch_size=100)
+        self.layer_r_matrix = RMatrix()
+        self.layer_mlp = MLP(128)
+
     def forward(self, user_number_triangles, graph_nodes, graph_adjacency_matrix):
         # POINT SAMPLER
-        gnn = GNN_Model(graph_nodes, graph_adjacency_matrix)
-        inclusion_score = gnn(torch.empty(0))
+        inclusion_score = self.layer_gnn_model(torch.empty(0), graph_nodes, graph_adjacency_matrix)
 
         target_number_point = min(graph_nodes.shape[0], user_number_triangles*3)   # number of points for the simplification
-        layer = MultinomialLayer(target_number_point, graph_nodes)
-        extended_graph_nodes = layer.forward(inclusion_score)
+        extended_graph_nodes = self.layer_multinomial(inclusion_score, target_number_point, graph_nodes)
 
-        extended_graph_adjacency_matrix = KNNSimple(k=15)(extended_graph_nodes)
+        extended_graph_adjacency_matrix = self.layer_knn_simple(extended_graph_nodes)
+
 
         # EDGE PREDICTOR
-        devconv = DevConv(extended_graph_nodes,extended_graph_adjacency_matrix, 64)
-        inclusion_score_edge = devconv(previous_inclusion_score=torch.empty((0)), return_flatten=False)
+        inclusion_score_edge = self.layer_devconv_edge_predictor(torch.empty((0)), extended_graph_nodes,extended_graph_adjacency_matrix, return_flatten=False)
 
         f = torch.mean(inclusion_score_edge, dim=1)                            # Flatten the matrix of inclusion score
-        layer = SparseAttentionEdgePredictorLayer(extended_graph_nodes, extended_graph_adjacency_matrix)
-        S = layer.forward(f)
+        S = self.layer_sparse_attention_edge_predictor(f, extended_graph_adjacency_matrix)
+
 
         # FACE CANDIDATES
-        layer = FaceCandidatesLayer(extended_graph_adjacency_matrix)
-        A_s = layer(torch.Tensor(S))
+        A_s = self.layer_face_cadidates(torch.Tensor(S), extended_graph_adjacency_matrix)
+
 
         # FACE CLASSIFIER
-        layer_find_triangles_indexes = TriangleIndexes(extended_graph_adjacency_matrix)
-        triangles_ids_igraph = layer_find_triangles_indexes()
+        triangles_ids_igraph = self.layer_triangle_indexes(extended_graph_adjacency_matrix)
 
-        layer_get_triangles = TriangleNodes(extended_graph_nodes)
-        triangles = layer_get_triangles(triangles_ids_igraph)
+        triangles = self.layer_triangle_nodes(triangles_ids_igraph, extended_graph_nodes)
 
-        p_init_layer = FirstPInitLayer(A_s, triangles)
-        p_init = p_init_layer(triangles_ids_igraph)
+        p_init = self.layer_first_p_init(triangles_ids_igraph, A_s, triangles)
 
-        barycenters_layer = BarycentersLayer()
-        barycenters = barycenters_layer(triangles)
+        barycenters = self.layer_barycenters(triangles)
 
-        knn_layer = KNN(barycenters)
-        indices_neigh_tri = knn_layer(barycenters).int()  #change datatype
+        indices_neigh_tri = self.layer_knn(barycenters).int()  #change datatype
 
-        r_matrix_layer = RMatrix(triangles, barycenters, indices_neigh_tri, self.number_neigh_tri)
-        r_matrix = r_matrix_layer()
+        r_matrix = self.layer_r_matrix(triangles, barycenters, indices_neigh_tri, self.number_neigh_tri)
 
-        mlp = MLP(r_matrix, indices_neigh_tri, 128)
-        final_scores = mlp(p_init)
+        final_scores = self.layer_mlp(p_init, r_matrix, indices_neigh_tri)
 
         selected_triangles_indexes = torch.topk(final_scores, k=user_number_triangles).indices
         selected_triangles = triangles[selected_triangles_indexes]
