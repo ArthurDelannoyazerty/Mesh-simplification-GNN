@@ -1,1 +1,1 @@
-change the layers in order to init them once (in th init of GNNSimplificationMesh) and just call them later. (Layers do not hold data except weights and bias that must be in the init functions)
+DEBUG

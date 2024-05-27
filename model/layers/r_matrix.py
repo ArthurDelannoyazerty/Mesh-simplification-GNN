@@ -3,7 +3,7 @@ import torch.nn as nn
 import numpy as np
 
 class RMatrix(nn.Module):
-    def __init__(self, ):
+    def __init__(self):
         super().__init__()
 
     def forward(self, triangles, barycenters, indices_neigh_tri, number_neigh_tri):

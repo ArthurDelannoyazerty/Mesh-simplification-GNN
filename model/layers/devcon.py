@@ -34,7 +34,7 @@ class DevConv(nn.Module):
             if list_inc_score.shape[1]==1:
                 list_inc_score = list_inc_score.flatten()
 
-        result_np = torch.stack([previous_inclusion_score, torch.tensor(list_inc_score)])
+        result_np = torch.stack([previous_inclusion_score, list_inc_score])
         
         result_np = torch.mean(result_np, dim=0)
         

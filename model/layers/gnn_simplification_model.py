@@ -24,6 +24,8 @@ class GNNSimplificationMesh(nn.Module):
         # self.graph_adjacency_matrix = graph_adjacency_matrix
         self.number_neigh_tri = number_neigh_tri
 
+        k = 20
+
         self.layer_gnn_model = GNN_Model()
         self.layer_multinomial = MultinomialLayer()
         self.layer_knn_simple = KNNSimple(k=15)
@@ -34,9 +36,9 @@ class GNNSimplificationMesh(nn.Module):
         self.layer_triangle_nodes = TriangleNodes()
         self.layer_first_p_init = FirstPInitLayer()
         self.layer_barycenters = BarycentersLayer()
-        self.layer_knn = KNN(k=20, batch_size=100)
+        self.layer_knn = KNN(k=k, batch_size=100)
         self.layer_r_matrix = RMatrix()
-        self.layer_mlp = MLP(128)
+        self.layer_mlp = MLP(128, k)
 
     def forward(self, user_number_triangles, graph_nodes, graph_adjacency_matrix):
         # POINT SAMPLER

@@ -8,7 +8,7 @@ class KNN(nn.Module):
         self.batch_size = batch_size
 
     def forward(self, barycenters):
-        indices_knn = torch.empty(size=(barycenters.shape[0], k))
+        indices_knn = torch.empty(size=(barycenters.shape[0], self.k))
         
         modulo = barycenters.shape[0]%self.batch_size
         nb_iter = int((barycenters.shape[0] - modulo) / self.batch_size)
@@ -17,12 +17,12 @@ class KNN(nn.Module):
             i_start, i_end = i*self.batch_size, (i+1)*self.batch_size
             distances = torch.norm(barycenters[i_start:i_end].unsqueeze(1) - barycenters.unsqueeze(0), dim=2)
 
-            neighbors = distances.topk(k, dim=1, largest=False).indices.clone()  # Indices of the k-nearest neighbors
+            neighbors = distances.topk(self.k, dim=1, largest=False).indices.clone()  # Indices of the k-nearest neighbors
             indices_knn[i_start:i_end] = neighbors
 
         # last piece of computation
         distances = torch.norm(barycenters[-modulo:].unsqueeze(1) - barycenters.unsqueeze(0), dim=2)
-        neighbors = distances.topk(k, dim=1, largest=False).indices.clone()  # Indices of the k-nearest neighbors
+        neighbors = distances.topk(self.k, dim=1, largest=False).indices.clone()  # Indices of the k-nearest neighbors
         indices_knn[-modulo:] = neighbors
 
 

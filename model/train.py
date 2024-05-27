@@ -47,6 +47,7 @@ for epoch in range(0, 5):
         
     graph_nodes, graph_adjacency_matrix = torch_dataset[0]
         # optimizer.zero_grad()
+    graph_nodes, graph_adjacency_matrix = torch.Tensor(graph_nodes), torch.Tensor(graph_adjacency_matrix)
     outputs = gnn_model(200, graph_nodes, graph_adjacency_matrix)
         
         # loss = total_loss(outputs, targets)

@@ -5,4 +5,4 @@ class TriangleNodes(nn.Module):
         super().__init__()
 
     def forward(self, triangles_indexes, nodes):
-        return self.nodes[triangles_indexes]
+        return nodes[triangles_indexes]
