@@ -32,10 +32,6 @@ class RMatrix(nn.Module):
 
 
         # R MATRIX COMPUTATION
-        r_matrix = torch.zeros((triangles.shape[0], number_neigh_tri-1, 5))
-
-        r_matrix[:, :, 0]   = min_diff_vectors_diff
-        r_matrix[:, :, 1]   = max_diff_vectors_diff
-        r_matrix[:, :, 2:5] = barycenters_diff
+        r_matrix = torch.cat((min_diff_vectors_diff.unsqueeze(2), max_diff_vectors_diff.unsqueeze(2), barycenters_diff), dim=2)
         
         return r_matrix
