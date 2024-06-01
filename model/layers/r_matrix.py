@@ -8,8 +8,10 @@ class RMatrix(nn.Module):
 
     def forward(self, triangles, barycenters, indices_neigh_tri, number_neigh_tri):
         # DIFF BARYCENTERS
-        barycenters_diff = np.subtract(barycenters[indices_neigh_tri[:, 0]][:, np.newaxis], barycenters[indices_neigh_tri[:, 1:]])   #Inverser la différence des barycentres si nécéssaire
-
+        # barycenters_diff = np.subtract(barycenters[indices_neigh_tri[:, 0]][:, np.newaxis], barycenters[indices_neigh_tri[:, 1:]])   #Inverser la différence des barycentres si nécéssaire
+        barycenters_first = barycenters[indices_neigh_tri[:, 0]].unsqueeze(1)  # Add a new dimension
+        barycenters_second = barycenters[indices_neigh_tri[:, 1:]]
+        barycenters_diff = barycenters_first - barycenters_second
 
         # TRIANGLE EDGES NORM
         v0, v1, v2 = triangles[:, 0], triangles[:, 1], triangles[:, 2]

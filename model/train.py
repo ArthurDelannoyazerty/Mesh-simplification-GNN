@@ -7,6 +7,7 @@ from mesh_dataset import MeshDataset
 from torch.utils.data import DataLoader
 from layers.gnn_simplification_model import GNNSimplificationMesh
 from loss.loss import total_loss
+from tqdm import tqdm
 
 
 
@@ -27,7 +28,8 @@ graph_adjacency_matrix = torch.Tensor(nx.adjacency_matrix(graph).toarray())
 
 torch_dataset = MeshDataset("3d_models/stl/")
 
-gnn_model = GNNSimplificationMesh(number_neigh_tri)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+gnn_model = GNNSimplificationMesh(number_neigh_tri).to(device)
 optimizer = torch.optim.Adam(gnn_model.parameters(), lr=1e-5, weight_decay=0.99)
 
 
@@ -35,8 +37,9 @@ for epoch in range(0, 1):
     print(f'Starting epoch {epoch+1}')
     
     current_loss = 0.0
-    for i, data in enumerate(torch_dataset):
+    for i, data in tqdm(enumerate(torch_dataset), total=len(torch_dataset), desc='Iterate data', leave=False):
         graph_nodes, graph_adjacency_matrix = torch_dataset[0]
+        graph_nodes, graph_adjacency_matrix = graph_nodes.to(device), graph_adjacency_matrix.to(device)
         optimizer.zero_grad()
         graph_nodes, graph_adjacency_matrix = graph_nodes, graph_adjacency_matrix
         selected_triangles = gnn_model(200, graph_nodes, graph_adjacency_matrix)

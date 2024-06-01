@@ -23,7 +23,7 @@ class KNNSimple(nn.Module):
         indices = indices[:, 1:]  # Exclude the node itself
 
         # Create adjacency matrix
-        adjacency_matrix = torch.zeros(nodes.shape[0], nodes.shape[0], dtype=torch.float32)
+        adjacency_matrix = torch.zeros(nodes.shape[0], nodes.shape[0], dtype=torch.float32, device=("cuda" if torch.cuda.is_available() else "cpu"))
         adjacency_matrix.scatter_(1, indices, 1)
 
         return adjacency_matrix

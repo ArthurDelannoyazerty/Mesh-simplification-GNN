@@ -12,7 +12,7 @@ def total_loss(inclusion_score, graph_nodes, extended_graph_nodes, final_scores,
     igraph_g_original = igraphGraph(directed=False).from_networkx(graph)
     triangles_ids_igraph_original = np.array(igraph_g_original.cliques(min=3, max=3))
     triangles_original = np.array(igraph_g_original.vs['_nx_name'])[triangles_ids_igraph_original]
-    b = torch.Tensor(np.mean(triangles_original, axis=1))
+    b = torch.Tensor(np.mean(triangles_original, axis=1)).to("cuda" if torch.cuda.is_available() else "cpu")
 
     b_hat = selected_triangles.mean(dim=1)
 

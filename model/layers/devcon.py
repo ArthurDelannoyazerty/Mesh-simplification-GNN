@@ -36,7 +36,7 @@ class DevConv(nn.Module):
                 max_distances[i] = neigh_distances[row_indices == i].max()
             list_inc_score = self.W_phi * max_distances.unsqueeze(1)
         elif adjacency_matrix.layout==torch.strided:
-            list_inc_score = torch.zeros((nodes.shape[0], self.size))                                               #list of "output_dimension" for each "list_node" element
+            list_inc_score = torch.zeros((nodes.shape[0], self.size), device="cuda" if torch.cuda.is_available() else "cpu")                                               #list of "output_dimension" for each "list_node" element
             for index_current_node, list_neighbors in enumerate(adjacency_matrix):                                  # for each node and its adjacency nodes
                 neighbors = nodes[list_neighbors.nonzero()]                                                    # get neighbors nodes
                 diff = nodes[index_current_node] - neighbors                                                   # Compute the differences between current_node and all neighbor nodes   (x_i - x_j)

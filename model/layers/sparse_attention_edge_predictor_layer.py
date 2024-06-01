@@ -20,7 +20,7 @@ class SparseAttentionEdgePredictorLayer(nn.Module):
         split_tensors = list(torch.split(nonzero_neigh, tuple(counts)))                             # split indexes of neighbors into a list (1 element = 1 tensor of indexes)
 
         temp = [[S[n[i,0], n[i,1]] for i in range(len(n))] for n in split_tensors]                  # For each node, get the S value for the neighbors indexes
-        summed = torch.Tensor([torch.sum(torch.Tensor(e)) for e in temp])                           # Sum these results for each nodes
+        summed = torch.Tensor([torch.sum(torch.Tensor(e)) for e in temp]).to("cuda" if torch.cuda.is_available() else "cpu")                           # Sum these results for each nodes
         division = summed.unsqueeze(0).repeat(1, S.shape[1], 1)[0]                                  # Repeat the sum in S.shape[1] array => division per columns
         final_term  = S / division
 

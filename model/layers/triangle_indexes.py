@@ -13,7 +13,7 @@ class TriangleIndexes(nn.Module):
         neighbors_three_indexes = neighbors_one_indexes[neighbors_two_indexes]      # Tensor for each 3 neighbors for each nodes (neighbors of neighbors of neighbors)
 
         # Find the indices where the current index is present along the last dimension => where start node = final node (= cycle)
-        values_index_reshape = torch.arange(neighbors_three_indexes.shape[0]).repeat((15,15,15,1)).permute(3, 0, 1, 2)                  # .permute(3, 0, 1, 2) was previously .T
+        values_index_reshape = torch.arange(neighbors_three_indexes.shape[0]).repeat((15,15,15,1)).permute(3, 0, 1, 2).to("cuda" if torch.cuda.is_available() else "cpu")                  # .permute(3, 0, 1, 2) was previously .T
         indices = (neighbors_three_indexes == values_index_reshape).nonzero()
 
         i, j, k, l = indices[:,0], indices[:,1], indices[:,2], indices[:,3]         # First node index, Second node index, third node index, Fourth node index
