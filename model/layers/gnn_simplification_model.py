@@ -40,18 +40,19 @@ class GNNSimplificationMesh(nn.Module):
         self.layer_r_matrix = RMatrix()
         self.layer_mlp = MLP(128, k)
 
+
     def forward(self, user_number_triangles, graph_nodes, graph_adjacency_matrix):
         # POINT SAMPLER
-        inclusion_score = self.layer_gnn_model(torch.empty(0), graph_nodes, graph_adjacency_matrix)
+        self.inclusion_score = self.layer_gnn_model(torch.empty(0), graph_nodes, graph_adjacency_matrix)
 
         target_number_point = min(graph_nodes.shape[0], user_number_triangles*3)   # number of points for the simplification
-        extended_graph_nodes = self.layer_multinomial(inclusion_score, target_number_point, graph_nodes)
+        self.extended_graph_nodes = self.layer_multinomial(self.inclusion_score, target_number_point, graph_nodes)
 
-        extended_graph_adjacency_matrix = self.layer_knn_simple(extended_graph_nodes)
+        extended_graph_adjacency_matrix = self.layer_knn_simple(self.extended_graph_nodes)
 
 
         # EDGE PREDICTOR
-        inclusion_score_edge = self.layer_devconv_edge_predictor(torch.empty((0)), extended_graph_nodes,extended_graph_adjacency_matrix, return_flatten=False)
+        inclusion_score_edge = self.layer_devconv_edge_predictor(torch.empty((0)), self.extended_graph_nodes,extended_graph_adjacency_matrix, return_flatten=False)
 
         f = torch.mean(inclusion_score_edge, dim=1)                            # Flatten the matrix of inclusion score
         S = self.layer_sparse_attention_edge_predictor(f, extended_graph_adjacency_matrix)
@@ -64,7 +65,7 @@ class GNNSimplificationMesh(nn.Module):
         # FACE CLASSIFIER
         triangles_ids_igraph = self.layer_triangle_indexes(extended_graph_adjacency_matrix)
 
-        triangles = self.layer_triangle_nodes(triangles_ids_igraph, extended_graph_nodes)
+        triangles = self.layer_triangle_nodes(triangles_ids_igraph, self.extended_graph_nodes)
 
         p_init = self.layer_first_p_init(triangles_ids_igraph, A_s, triangles)
 
@@ -74,9 +75,9 @@ class GNNSimplificationMesh(nn.Module):
 
         r_matrix = self.layer_r_matrix(triangles, barycenters, indices_neigh_tri, self.number_neigh_tri)
 
-        final_scores = self.layer_mlp(p_init, r_matrix, indices_neigh_tri)
+        self.final_scores = self.layer_mlp(p_init, r_matrix, indices_neigh_tri)
 
-        selected_triangles_indexes = torch.topk(final_scores, k=user_number_triangles).indices
-        selected_triangles = triangles[selected_triangles_indexes]
+        self.selected_triangles_indexes = torch.topk(self.final_scores, k=user_number_triangles).indices
+        selected_triangles = triangles[self.selected_triangles_indexes]
 
         return selected_triangles

@@ -13,7 +13,7 @@ class MLP(nn.Module):
     self.relu2 = nn.ReLU()
 
     self.linear3 = nn.Linear(6, hidden_size)
-    self.softmax = nn.Softmax()
+    self.softmax = nn.Softmax(dim=0)
 
 
   def forward(self, p_init, r_matrix, indices_neigh_tri):
@@ -42,6 +42,6 @@ class MLP(nn.Module):
     
     mlp_output = self.linear3(r_diff)
     f_output = mlp_output.sum(dim=1).sum(dim=1)   # sum over hidden dim and k 
-    f_softmax = self.softmax(f)
+    f_softmax = self.softmax(f_output)
     
     return f_softmax
