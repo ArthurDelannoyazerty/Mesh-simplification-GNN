@@ -1,14 +1,16 @@
 import torch
 import numpy as np
 import networkx as nx
+import time
 
 from transformation import Transformation
 from mesh_dataset import MeshDataset
 from torch.utils.data import DataLoader
-from layers.gnn_simplification_model import GNNSimplificationMesh
+from gnn_simplification_model import GNNSimplificationMesh
 from loss.loss import total_loss
 from tqdm import tqdm
 
+torch.manual_seed(42)
 
 
 
@@ -38,14 +40,24 @@ for epoch in range(0, 1):
     
     current_loss = 0.0
     for i, data in tqdm(enumerate(torch_dataset), total=len(torch_dataset), desc='Iterate data', leave=False):
+        
+        start = time.time()
         graph_nodes, graph_adjacency_matrix = torch_dataset[0]
         graph_nodes, graph_adjacency_matrix = graph_nodes.to(device), graph_adjacency_matrix.to(device)
         optimizer.zero_grad()
-        graph_nodes, graph_adjacency_matrix = graph_nodes, graph_adjacency_matrix
+        end = time.time()
+        print('init input : ', end - start)
         selected_triangles = gnn_model(200, graph_nodes, graph_adjacency_matrix)
         
+        start = time.time()
         loss = total_loss(gnn_model.inclusion_score, graph_nodes, gnn_model.extended_graph_nodes, gnn_model.final_scores, selected_triangles, gnn_model.selected_triangles_indexes, graph)
-        loss.backward()
+        end = time.time()
+        print('loss : ', end - start)
+        
+        start = time.time()
+        loss.backward()        
+        end = time.time()
+        print('backward : ', end - start)
         optimizer.step()
         
         current_loss += loss.item()
