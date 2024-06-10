@@ -1,3 +1,46 @@
+------------------------------------------------------------------------------
+AFTER DEVCONV IMPROVEMENT
+
+IMPORTANT
+
+backward                        :  10.415502071380615
+gnn_model                       :  1.5172522068023682
+gnn_model l1                        :  0.8689610958099365
+gnn_model l2                        :  0.3321363925933838
+gnn_model l3                        :  0.31615471839904785
+sparse attention edge predictor :  0.7764742374420166
+init input                      :  0.3500630855560303
+loss                            :  0.27815675735473633
+knn                             :  0.1770329475402832
+
+
+ALL
+
+init input                      :  0.3500630855560303
+gnn_model l1                    :  0.8689610958099365
+gnn_model l2                    :  0.3321363925933838
+gnn_model l3                    :  0.31615471839904785
+gnn_model                       :  1.5172522068023682    
+multinomial                     :  0.002991914749145508
+knn simple                      :  0.0010178089141845703
+simp^le devconv                 :  0.04286456108093262
+sparse attention edge predictor :  0.7764742374420166
+face candidate                  :  0.002964496612548828  
+triangle indexes                :  0.016954660415649414
+traingle node                   :  0.0
+first p init                    :  0.0
+barycenter                      :  0.0
+knn                             :  0.1770329475402832
+r matrix                        :  0.0019941329956054688
+mlp                             :  0.024441242218017578
+selected triangles topk         :  0.0
+loss                            :  0.27815675735473633
+backward                        :  10.415502071380615
+
+
+------------------------------------------------------------------------------
+BEFORE DEVCONV IMPROVEMENT
+
 IMPORTANT
 
 backward                        :  11.980695724487305           1
@@ -12,19 +55,17 @@ knn                             :  0.23536920547485352
 loss                            :  0.2642853260040283
 
 
-
-
 ALL
 
 init input                      :  0.3490712642669678
-gnn_model                       :  5.447567462921143            2
-gnn_model l1                        :  2.1817808151245117       2.1
-gnn_model l2                        :  1.654754400253296        2.2
-gnn_model l3                        :  1.6905016899108887       2.2
+gnn_model                       :  5.447567462921143     
+gnn_model l1                        :  2.1817808151245117
+gnn_model l2                        :  1.654754400253296 
+gnn_model l3                        :  1.6905016899108887
 multinomial                     :  0.002988100051879883
 knn simple                      :  0.000997781753540039
 simple devconv                 :  0.39492344856262207
-sparse attention edge predictor :  0.7898869514465332           3
+sparse attention edge predictor :  0.7898869514465332
 face candidate                  :  0.0010063648223876953
 triangle indexes                :  0.01794266700744629
 traingle node                   :  0.0
@@ -34,5 +75,5 @@ knn                             :  0.23536920547485352
 r matrix                        :  0.0039899349212646484
 mlp                             :  0.023935794830322266
 selected triangles topk         :  0.0
-loss                            :  0.2642853260040283           nope
-backward                        :  11.980695724487305           1
+loss                            :  0.2642853260040283
+backward                        :  11.980695724487305 

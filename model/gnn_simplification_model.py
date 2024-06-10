@@ -64,7 +64,7 @@ class GNNSimplificationMesh(nn.Module):
 
         # EDGE PREDICTOR
         start = time.time()
-        inclusion_score_edge = self.layer_devconv_edge_predictor(torch.empty((0)), self.extended_graph_nodes,extended_graph_adjacency_matrix, return_flatten=False)
+        inclusion_score_edge = self.layer_devconv_edge_predictor(torch.empty((0)), self.extended_graph_nodes, extended_graph_adjacency_matrix.to_sparse(), return_flatten=False)
         end = time.time()
         print('simp^le devconv : ', end - start)
 
