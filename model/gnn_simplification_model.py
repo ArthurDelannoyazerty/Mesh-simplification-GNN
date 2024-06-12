@@ -37,7 +37,7 @@ class GNNSimplificationMesh(nn.Module):
         self.layer_triangle_nodes = TriangleNodes()
         self.layer_first_p_init = FirstPInitLayer()
         self.layer_barycenters = BarycentersLayer()
-        self.layer_knn = KNN(k=k, batch_size=100)
+        self.layer_knn = KNN(k=k, batch_size=1000)
         self.layer_r_matrix = RMatrix()
         self.layer_mlp = MLP(128, k)
 

@@ -1,6 +1,8 @@
 import os
 import networkx as nx
 import numpy as np
+import stl_reader
+import pyvista
 
 import torch
 from torch.utils.data import Dataset
@@ -22,15 +24,17 @@ class MeshDataset(Dataset):
 
     def __getitem__(self, idx):
         mesh_path = self.filepaths[idx]
-        mesh_data = self.transformation.stl_to_mesh(mesh_path)
-        graph = self.transformation.mesh_to_graph(mesh_data)
 
-        adjacency_coo = nx.adjacency_matrix(graph).tocoo()
-        indices = torch.stack((torch.tensor(adjacency_coo.row, dtype=torch.long), 
-                               torch.tensor(adjacency_coo.col, dtype=torch.long)))
-        values = torch.tensor(adjacency_coo.data, dtype=torch.float32)
-        adjacency_sparse = torch.sparse_coo_tensor(indices, values, torch.Size(adjacency_coo.shape))
+        vertices, triangles = stl_reader.read(mesh_path)
+        vertices, triangles = torch.from_numpy(vertices), torch.from_numpy(triangles.astype(np.int32))
+        num_nodes = vertices.size(0)
         
-        graph_nodes = torch.Tensor(np.array(graph.nodes))
+        edges = torch.cat([triangles[:, [0, 1]], triangles[:, [1, 2]], triangles[:, [2, 0]]], dim=0)
+
+        adjacency_matrix = torch.sparse_coo_tensor(
+            indices=torch.cat([edges, edges.flip(1)], dim=0).t(),
+            values=torch.ones(edges.size(0) * 2, dtype=torch.float),
+            size=(num_nodes, num_nodes)
+        )
         
-        return graph_nodes, adjacency_sparse
+        return vertices, adjacency_matrix

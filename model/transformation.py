@@ -3,6 +3,7 @@ from stl import mesh
 import vtkplotlib as vpl
 import numpy as np
 import matplotlib.pyplot as plt
+import trimesh
 
 class Transformation():
     def __init__(self, debug=False):
@@ -80,6 +81,11 @@ class Transformation():
             for j in range(3):
                 mesh_obj.vectors[i][j] = vertices[f[j],:]
         return mesh_obj
+    
+    def stl_filepath_2_adjacency_matrix(self, filepath):
+        mesh = trimesh.load_mesh(filepath)
+        graph = trimesh.graph.vertex_adjacency_graph(mesh)
+        return graph
 
 
 

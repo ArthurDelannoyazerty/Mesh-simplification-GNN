@@ -39,10 +39,9 @@ def train():
         print(f'Starting epoch {epoch+1}')
         
         current_loss = 0.0
-        for i, data in tqdm(enumerate(torch_dataset), total=len(torch_dataset), desc='Iterate data', leave=False):
+        start = time.time()
+        for i, (graph_nodes, graph_adjacency_matrix) in tqdm(enumerate(torch_dataset), total=len(torch_dataset), desc='Iterate data', leave=False):
             
-            start = time.time()
-            graph_nodes, graph_adjacency_matrix = torch_dataset[0]
             graph_nodes, graph_adjacency_matrix = graph_nodes.to(device), graph_adjacency_matrix.to(device)
             optimizer.zero_grad()
             end = time.time()
@@ -54,18 +53,19 @@ def train():
             end = time.time()
             print('loss : ', end - start)
             
-            start = time.time()
-            loss.backward()        
-            end = time.time()
-            print('backward : ', end - start)
-            optimizer.step()
-            
             current_loss += loss.item()
             if i % 500 == 499:
                 print('Loss after mini-batch %5d: %.3f' %
                     (i + 1, current_loss / 500))
                 current_loss = 0.0
-                
+            
+            start = time.time()
+    
+    start = time.time()
+    loss.backward()        
+    end = time.time()
+    print('backward : ', end - start)
+    optimizer.step()            
     print('Training process has finished.')
 
 train()

@@ -1,3 +1,42 @@
+
+------------------------------------------------------------------------------
+AFTER DATALOADER IMPROVEMENT
+
+IMPORTANT
+
+backward        :  10.184916496276855
+gnn_model       :  1.594862937927246
+gnn_model l1        :  0.861823320388794
+gnn_model l2        :  0.4019460678100586
+gnn_model l3        :  0.33011579513549805
+loss            :  0.2672884464263916
+knn             :  0.2094554901123047
+mlp             :  0.02493429183959961
+init input      :  0.006952524185180664
+
+ALL
+
+init input :  0.006952524185180664
+gnn_model l1 :  0.861823320388794
+gnn_model l2 :  0.4019460678100586
+gnn_model l3 :  0.33011579513549805
+gnn_model :  1.594862937927246
+multinomial :  0.002992391586303711
+knn simple :  0.0
+simp^le devconv :  0.03293490409851074
+sparse attention edge predictor :  0.0009765625
+face candidate :  0.0
+triangle indexes :  0.01695394515991211
+traingle node :  0.0
+first p init :  0.0
+barycenter :  0.0
+knn :  0.2094554901123047
+r matrix :  0.0019953250885009766
+mlp :  0.02493429183959961
+selected triangles topk :  0.0009975433349609375
+loss :  0.2672884464263916
+backward :  10.184916496276855
+
 ------------------------------------------------------------------------------
 AFTER EDGE PREDICTOR IMPROVEMENT
 
