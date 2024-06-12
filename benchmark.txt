@@ -1,4 +1,44 @@
 ------------------------------------------------------------------------------
+AFTER EDGE PREDICTOR IMPROVEMENT
+
+IMPORTANT
+
+backward         :  11.208462953567505
+gnn_model        :  3.3042757511138916 
+gnn_model l1        :  2.5372605323791504
+gnn_model l2        :  0.38500547409057617
+gnn_model l3        :  0.37200450897216797 
+init input       :  0.6442773342132568  
+loss             :  0.43698811531066895
+knn              :  0.26329565048217773
+
+
+ALL
+
+init input :  0.6442773342132568
+gnn_model l1 :  2.5372605323791504
+gnn_model l2 :  0.38500547409057617
+gnn_model l3 :  0.37200450897216797
+gnn_model :  3.3042757511138916    
+multinomial :  0.05195260047912598
+knn simple :  0.00961446762084961 
+simp^le devconv :  0.05186319351196289
+sparse attention edge predictor :  0.002842426300048828
+face candidate :  0.003154277801513672
+triangle indexes :  0.028923988342285156
+traingle node :  0.0
+first p init :  0.000997781753540039    
+barycenter :  0.0
+knn :  0.26329565048217773
+r matrix :  0.005984306335449219
+mlp :  0.02991962432861328
+selected triangles topk :  0.0009982585906982422
+loss :  0.43698811531066895
+backward :  11.208462953567505
+
+
+
+------------------------------------------------------------------------------
 AFTER DEVCONV IMPROVEMENT
 
 IMPORTANT
