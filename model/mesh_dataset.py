@@ -31,10 +31,26 @@ class MeshDataset(Dataset):
         
         edges = torch.cat([triangles[:, [0, 1]], triangles[:, [1, 2]], triangles[:, [2, 0]]], dim=0)
 
-        adjacency_matrix = torch.sparse_coo_tensor(
-            indices=torch.cat([edges, edges.flip(1)], dim=0).t(),
-            values=torch.ones(edges.size(0) * 2, dtype=torch.float),
+        # Create COO indices and values for the adjacency matrix
+        coo_indices = torch.cat([edges, edges.flip(1)], dim=0).t()
+        values = torch.ones(coo_indices.size(1), dtype=torch.float)
+
+        # Convert COO indices to CSR format
+        row_indices = coo_indices[0]
+        col_indices = coo_indices[1]
+
+        # Calculate the number of non-zero elements per row
+        row_counts = torch.bincount(row_indices, minlength=num_nodes)
+
+        # Calculate the cumulative sum of row_counts to get the CSR row pointers
+        csr_row_ptr = torch.cat([torch.zeros(1, dtype=torch.int64), torch.cumsum(row_counts, dim=0)])
+
+        # Create the CSR tensor
+        adjacency_matrix_csr = torch.sparse_csr_tensor(
+            csr_row_ptr,
+            col_indices,
+            values,
             size=(num_nodes, num_nodes)
         )
         
-        return vertices, adjacency_matrix, triangles
+        return vertices, adjacency_matrix_csr, triangles

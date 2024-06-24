@@ -21,6 +21,7 @@ class GNN_Model(nn.Module):
         x = self.devconv1(x, nodes, adjacency_matrix)
         end = time.time()
         print('gnn_model l1 : ', end - start)
+        
         x = self.relu1(x)
         start = time.time()
         x = self.devconv2(x, nodes, adjacency_matrix)

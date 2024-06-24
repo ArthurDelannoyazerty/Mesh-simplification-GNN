@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import time
 
+import torchviz
+
 from layers.gnn import GNN_Model
 from layers.multinomial import MultinomialLayer
 from layers.knn_simple import KNNSimple
@@ -49,6 +51,7 @@ class GNNSimplificationMesh(nn.Module):
         self.score_original_points = self.layer_gnn_model(torch.empty(0), original_graph_nodes, original_graph_adjacency_matrix)
         end = time.time()
         print('gnn_model : ', end - start)
+
 
         start = time.time()
         target_number_point = min(original_graph_nodes.shape[0], target_number_triangles*3)   # number of points for the simplification

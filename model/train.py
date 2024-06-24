@@ -60,6 +60,13 @@ def train():
     loss.backward()        
     end = time.time()
     print('backward : ', end - start)
+
+    for name, param in gnn_model.named_parameters():
+        print(name)
+        print(param.shape)
+        # print(param.grad)
+        print('')
+
     optimizer.step()            
     print('Training process has finished.')
 
