@@ -37,4 +37,4 @@ class MeshDataset(Dataset):
             size=(num_nodes, num_nodes)
         )
         
-        return vertices, adjacency_matrix
+        return vertices, adjacency_matrix, triangles

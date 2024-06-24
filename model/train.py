@@ -1,9 +1,6 @@
 import torch
-import numpy as np
-import networkx as nx
 import time
 
-from transformation import Transformation
 from mesh_dataset import MeshDataset
 from torch.utils.data import DataLoader
 from gnn_simplification_model import GNNSimplificationMesh
@@ -14,19 +11,10 @@ torch.manual_seed(42)
 
 
 def train():
-    transformation = Transformation()
-
     number_neigh_tri = 20
-    stl_file_path = "3d_models/stl/Handle.stl"
-    mesh_data = transformation.stl_to_mesh(stl_file_path)
-    graph = transformation.mesh_to_graph(mesh_data)
 
-
-    if len(graph._node)<20:
-        raise Exception("Input mesh does not have enough vertices. (More than 20 is needed)")
-
-    graph_nodes = torch.Tensor(np.array(graph))
-    graph_adjacency_matrix = torch.Tensor(nx.adjacency_matrix(graph).toarray())
+    # if len(graph._node)<20:
+    #     raise Exception("Input mesh does not have enough vertices. (More than 20 is needed)")
 
     torch_dataset = MeshDataset("3d_models/stl/")
 
@@ -40,16 +28,23 @@ def train():
         
         current_loss = 0.0
         start = time.time()
-        for i, (graph_nodes, graph_adjacency_matrix) in tqdm(enumerate(torch_dataset), total=len(torch_dataset), desc='Iterate data', leave=False):
+        for i, (graph_nodes, graph_adjacency_matrix, triangles) in tqdm(enumerate(torch_dataset), total=len(torch_dataset), desc='Iterate data', leave=False):
             
             graph_nodes, graph_adjacency_matrix = graph_nodes.to(device), graph_adjacency_matrix.to(device)
             optimizer.zero_grad()
             end = time.time()
             print('init input : ', end - start)
-            selected_triangles = gnn_model(200, graph_nodes, graph_adjacency_matrix)
+            selected_triangles = gnn_model(200, 
+                                           graph_nodes, 
+                                           graph_adjacency_matrix)
             
             start = time.time()
-            loss = total_loss(gnn_model.inclusion_score, graph_nodes, gnn_model.extended_graph_nodes, gnn_model.final_scores, selected_triangles, gnn_model.selected_triangles_indexes, graph)
+            loss = total_loss(gnn_model.score_original_points, 
+                              graph_nodes, 
+                              gnn_model.generated_graph_nodes, 
+                              gnn_model.selected_triangles_probabilities, 
+                              selected_triangles, 
+                              gnn_model.original_barycenters)
             end = time.time()
             print('loss : ', end - start)
             

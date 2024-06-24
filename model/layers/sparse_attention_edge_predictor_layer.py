@@ -14,5 +14,5 @@ class SparseAttentionEdgePredictorLayer(nn.Module):
         wq_f = self.wq.reshape(-1, 1) * f               # Wq*f
         wk_f = self.wk.reshape(-1, 1) * f               # Wq*f
         S = torch.exp(torch.matmul(wq_f.T, wk_f))       # e^((wq_f.T)*(wk_f))
-        S = S / torch.matmul(neighbors.float(), S).T    # Division
+        S = S / torch.matmul(neighbors, S).T    # Division
         return S

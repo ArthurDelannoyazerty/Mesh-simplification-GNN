@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import time
 
 class DevConv(nn.Module):
     def __init__(self, output_dimension):
@@ -14,14 +15,28 @@ class DevConv(nn.Module):
     
     def forward(self, previous_inclusion_score, nodes, adjacency_matrix, return_flatten=True):
         
+        # SLOW
         indices = adjacency_matrix.coalesce().indices()
         distances = nodes[indices[1]] - nodes[indices[0]]
         w_theta_operation = (distances @ self.W_theta).squeeze()
         non_padded_grouped_distance = w_theta_operation.split(tuple(torch.bincount(indices[0])))
         padded_grouped_distance = torch.nn.utils.rnn.pad_sequence(non_padded_grouped_distance, batch_first=True, padding_value=-torch.inf)
-        maxi = padded_grouped_distance.max(dim=1).values
-        list_inc_score = self.W_phi * maxi
-            
+        max_distances = padded_grouped_distance.max(dim=1).values
+        
+
+        # FAST
+        # dist = nodes.unsqueeze(0) - nodes.unsqueeze(1)
+        # wo = (dist @ self.W_theta).squeeze()
+        # masked_distances = wo * adjacency_matrix.float().unsqueeze(2)
+        # # masked_distances = masked_distances.to_dense()
+        # # max_distances2, _ = torch.max(masked_distances, dim=1)
+        # out1 = bucketize(masked_distances.coalesce())
+        # out2 = convert_coo_to_csr(masked_distances.coalesce())
+        # max_distances2 = torch.amax(masked_distances, dim=1)
+        
+        
+        list_inc_score = self.W_phi * max_distances
+        
         if len(previous_inclusion_score)==0:                            # return if no previous inclusion score
             if return_flatten:
                 list_inc_score = list_inc_score.flatten()
