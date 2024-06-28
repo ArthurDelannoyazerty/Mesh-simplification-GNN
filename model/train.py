@@ -28,19 +28,16 @@ def train():
         
         current_loss = 0.0
         start = time.time()
-        for i, (graph_nodes, graph_adjacency_matrix, triangles) in tqdm(enumerate(torch_dataset), total=len(torch_dataset), desc='Iterate data', leave=False):
+        for i, (torch_graph, triangles) in tqdm(enumerate(torch_dataset), total=len(torch_dataset), desc='Iterate data', leave=False):
             
-            graph_nodes, graph_adjacency_matrix = graph_nodes.to(device), graph_adjacency_matrix.to(device)
-            optimizer.zero_grad()
+            # optimizer.zero_grad()
             end = time.time()
             print('init input : ', end - start)
-            selected_triangles = gnn_model(200, 
-                                           graph_nodes, 
-                                           graph_adjacency_matrix)
+            selected_triangles = gnn_model(200, torch_graph)
             
             start = time.time()
             loss = total_loss(gnn_model.score_original_points, 
-                              graph_nodes, 
+                            #   graph_nodes, 
                               gnn_model.generated_graph_nodes, 
                               gnn_model.selected_triangles_probabilities, 
                               selected_triangles, 

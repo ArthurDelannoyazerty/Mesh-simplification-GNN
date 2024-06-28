@@ -1,1 +1,13 @@
-DEBUG
+|devconvgnn : OK
+
+multinomial : normal no backward (randomness)
+knn : i don't know if backward needed (re check)
+
+|simple devconv : OK
+|sparse attention edge predictor : backward connected to simple devconv
+|face candidates : ok backward connected to sparse attention edge predictor
+
+triangles indexes : NO break at l17 : creation indexes
+
+triangle node : normally ok with grad backward
+
