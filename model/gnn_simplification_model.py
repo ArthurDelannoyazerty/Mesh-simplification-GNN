@@ -43,7 +43,7 @@ class GNNSimplificationMesh(nn.Module):
         self.layer_barycenters = BarycentersLayer()
         self.layer_knn = KNN(k=k, batch_size=1000)
         self.layer_r_matrix = RMatrix()
-        self.layer_mlp = MLP(128, k)
+        self.layer_mlp = MLP(1, 128, 1)
 
 
     def forward(self, target_number_triangles, original_graph):
@@ -73,13 +73,12 @@ class GNNSimplificationMesh(nn.Module):
         # EDGE PREDICTOR
         start = time.time()
         edge_index_generated_graph = generated_graph_adjacency_matrix.nonzero().T
-        score_edge = self.layer_devconv_edge_predictor(edge_index_generated_graph, self.generated_graph_nodes).squeeze()
+        score_edge = self.layer_devconv_edge_predictor(edge_index_generated_graph, self.generated_graph_nodes).squeeze().sigmoid()
         end = time.time()
         print('simple devconv : ', end - start)
         if self.debug: display(torchviz.make_dot(score_edge))
 
-        start = time.time()
-        # f = torch.mean(score_edge, dim=1).sigmoid()                            # Flatten the matrix of inclusion score
+        start = time.time()                         # Flatten the matrix of inclusion score
         S = self.layer_sparse_attention_edge_predictor(score_edge, generated_graph_adjacency_matrix)
         end = time.time()
         print('sparse attention edge predictor : ', end - start)
@@ -88,7 +87,7 @@ class GNNSimplificationMesh(nn.Module):
 
         # FACE CANDIDATES
         start = time.time()
-        generated_probabilistic_graph_adjacency_matrix = self.layer_face_cadidates(torch.Tensor(S), generated_graph_adjacency_matrix)
+        generated_probabilistic_graph_adjacency_matrix = self.layer_face_cadidates(S, generated_graph_adjacency_matrix)
         end = time.time()
         print('face candidate : ', end - start)
         if self.debug: display(torchviz.make_dot(generated_probabilistic_graph_adjacency_matrix))
@@ -131,6 +130,7 @@ class GNNSimplificationMesh(nn.Module):
         end = time.time()
         print('r matrix : ', end - start)
         if self.debug: display(torchviz.make_dot(r_matrix))
+
 
         start = time.time()
         self.final_scores = self.layer_mlp(p_init, r_matrix, indices_neigh_tri)

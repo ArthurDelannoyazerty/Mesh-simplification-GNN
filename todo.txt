@@ -7,26 +7,23 @@ x no need
 
 | devconvgnn : OK
 
-x multinomial : normal no backward (randomness)
-x knn : i don't know if backward needed (re check)
+x multinomial : normal no backward (randomness, no parameters)
+x knn : normal no backward (no previous backward and no parameters)
 
 | simple devconv : OK
 | sparse attention edge predictor : backward connected to simple devconv
 | face candidates : ok backward connected to sparse attention edge predictor
 
-! triangles indexes : NO break at l17 : creation indexes
+x triangles indexes : no need (direct from knn so no parameters)
+x triangle node : no need (no parameters since knn)
 
-? triangle node : normally ok with grad backward
+| first_p_init : OK linked to face candidates
 
-? first_p_init : NO missing triangles indexes
+x barycenter : no need
+x knn : no need
+x r matrix : no need
 
-? barycenter : normally ok
-
-! knn : no linked (indices topk)
-
-? r matrix : normally ok (just no grad passed now)
-
-? mlp : seems ok, some grad missing because previous errors
+| mlp : ok, linked to first p_init
 | selected triangles probabilities : linked to previous
 
 ! selected triangles : no grad (indices)

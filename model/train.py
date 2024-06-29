@@ -37,7 +37,7 @@ def train():
             
             start = time.time()
             loss = total_loss(gnn_model.score_original_points, 
-                            #   graph_nodes, 
+                              torch_graph.x, 
                               gnn_model.generated_graph_nodes, 
                               gnn_model.selected_triangles_probabilities, 
                               selected_triangles, 
@@ -61,7 +61,7 @@ def train():
     for name, param in gnn_model.named_parameters():
         print(name)
         print(param.shape)
-        # print(param.grad)
+        print(param.grad)
         print('')
 
     optimizer.step()            

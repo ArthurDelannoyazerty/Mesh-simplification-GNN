@@ -1,5 +1,44 @@
 
 ------------------------------------------------------------------------------
+AFTER MLP + DEVCONV TORCH GEOMETRIC
+
+IMPORTANT
+
+gnn_model               :  0.543609619140625       
+gnn_model l1                :  0.5007028579711914
+
+ALL
+
+init input          :  0.007978677749633789
+gnn_model l1            :  0.5007028579711914
+gnn_model l2            :  0.001026153564453125 
+gnn_model l3            :  0.0009903907775878906
+gnn_model           :  0.543609619140625       
+multinomial         :  0.0029702186584472656
+knn simple          :  0.000997781753540039
+simple devconv      :  0.001001119613647461
+sparse attention edge predictor :  0.0
+face candidate      :  0.000997304916381836
+triangle indexes    :  0.016955137252807617
+traingle node       :  0.0
+first p init        :  0.0
+barycenter          :  0.0009968280792236328
+knn                 :  0.008975505828857422
+r matrix            :  0.0009970664978027344
+mlp                 :  0.013964176177978516
+selected triangles topk :  0.001993894577026367
+loss                :  0.000997781753540039
+backward            :  0.008975982666015625
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------
 AFTER DATALOADER IMPROVEMENT
 
 IMPORTANT
