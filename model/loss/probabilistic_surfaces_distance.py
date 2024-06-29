@@ -7,7 +7,9 @@ def torch_d_f_S_Ss(p_b_hat, b_hat, b):
     expanded_x2 = b.unsqueeze(0)
     distances = torch.norm(expanded_x1 - expanded_x2, dim=2)
 
-    min_b = distances.min(dim=1).values
+    distances_filtered = torch.where(distances != 0, distances, torch.inf)
+
+    min_b = distances_filtered.min(dim=1).values
 
     final_term = torch.sum(p_b_hat * min_b)
 
