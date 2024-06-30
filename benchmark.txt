@@ -5,7 +5,7 @@ AFTER MLP + DEVCONV TORCH GEOMETRIC
 IMPORTANT
 
 gnn_model               :  0.543609619140625       
-gnn_model l1                :  0.5007028579711914
+gnn_model l1                :  0.5007028579711914       # Just the first one to create the computational graph
 
 ALL
 

@@ -19,6 +19,6 @@ def total_loss(inclusion_score, graph_nodes, extended_graph_nodes, selected_tria
 
     # d_r_S_Ss = torch_d_r_S_Ss(final_scores, p_b_hat, b, b_hat)
 
-    loss = d_P_Ps + d_f_S_Ss #+ d_r_S_Ss
+    # loss = d_P_Ps + d_f_S_Ss #+ d_r_S_Ss
 
-    return loss
+    return d_P_Ps, d_f_S_Ss
