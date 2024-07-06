@@ -15,15 +15,13 @@ class KNN(nn.Module):
 
         for i in range(nb_iter):
             i_start, i_end = i*self.batch_size, (i+1)*self.batch_size
-            distances = torch.norm(barycenters[i_start:i_end].unsqueeze(1) - barycenters.unsqueeze(0), dim=2)
-
+            distances = torch.cdist(barycenters[i_start:i_end],barycenters)
             neighbors = distances.topk(self.k, dim=1, largest=False).indices  # Indices of the k-nearest neighbors
             indices_knn[i_start:i_end] = neighbors
 
         # last piece of computation
-        distances = torch.norm(barycenters[-modulo:].unsqueeze(1) - barycenters.unsqueeze(0), dim=2)
+        distances = torch.cdist(barycenters[-modulo:],barycenters)
         neighbors = distances.topk(self.k, dim=1, largest=False).indices  # Indices of the k-nearest neighbors
         indices_knn[-modulo:] = neighbors
-
 
         return indices_knn
