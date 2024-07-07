@@ -1,1 +1,9 @@
 __pycache__/
+runs/
+old_trace/
+test.py
+save_models/
+old_runs/
+3d_models/
+movie.mp4
+saved_img/
