@@ -19,9 +19,10 @@ class KNN(nn.Module):
             neighbors = distances.topk(self.k, dim=1, largest=False).indices  # Indices of the k-nearest neighbors
             indices_knn[i_start:i_end] = neighbors
 
-        # last piece of computation
-        distances = torch.cdist(barycenters[-modulo:],barycenters)
-        neighbors = distances.topk(self.k, dim=1, largest=False).indices  # Indices of the k-nearest neighbors
-        indices_knn[-modulo:] = neighbors
+        if modulo!=0:
+            # last piece of computation
+            distances = torch.cdist(barycenters[-modulo:],barycenters)
+            neighbors = distances.topk(self.k, dim=1, largest=False).indices  # Indices of the k-nearest neighbors
+            indices_knn[-modulo:] = neighbors
 
         return indices_knn
